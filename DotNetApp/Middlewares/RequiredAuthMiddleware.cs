@@ -35,31 +35,6 @@ public class RequiredAuthMiddleware(
         // Check if the endpoint has a RequiredAuth attribute
         var requiredAuthAttribute = endpoint?.Metadata.GetMetadata<RequiredAuthAttribute>();
 
-        /*if (requiredAuthAttribute != null && requiredAuthAttribute.Type == AuthType.AccessToken)
-        {
-            // Get the Authorization header
-            var authHeader = context.Request.Headers["Authorization"].ToString();
-
-            // Check if the header starts with "Bearer "
-            if (authHeader.StartsWith("Bearer "))
-            {
-                // Remove the "Bearer " prefix
-                var token = authHeader.Substring("Bearer ".Length);
-
-                // Validate the token
-                if (!jwtRsaService.ValidateToken(token))
-                {
-                    // If the token is invalid, set the response status code to 401 and return
-                    throw new UnauthorizedAccessException("Unauthorized access. Invalid token.");
-                }
-            }
-            else
-            {
-                // If the header does not start with "Bearer ", set the response status code to 401 and return
-                throw new UnauthorizedAccessException("Unauthorized access. Missing Bearer token.");
-            }
-        }*/
-
         if (requiredAuthAttribute != null && requiredAuthAttribute.Type == AuthType.AccessToken)
         {
             // Get the Authorization header
@@ -86,6 +61,9 @@ public class RequiredAuthMiddleware(
                     // If the token is invalid, set the response status code to 401 and return
                     throw new UnauthorizedAccessException("Unauthorized access. Invalid token.");
                 }
+                
+                // retrieve the access token and then add it to the HttpContext for use in other parts of your application
+                context.Items["AccessToken"] = token;
             }
             else
             {

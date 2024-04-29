@@ -29,8 +29,6 @@ public class PolicyEnforcementMiddleware(RequestDelegate next, HttpClient httpCl
             return;
         }
 
-        Console.WriteLine("PolicyEnforcementMiddleware invoked");
-
         // Get the policy attribute
         var policyAttribute = endpoint?.Metadata.GetMetadata<PolicyAttribute>();
 
@@ -38,10 +36,9 @@ public class PolicyEnforcementMiddleware(RequestDelegate next, HttpClient httpCl
         var scope = policyAttribute?.Scope ?? Scope.None;
 
         // Enforce the policy
-        if (!await _policyEnforcer.EnforcePolicy(resource, scope))
+        if (!await _policyEnforcer.EnforcePolicy(resource, scope, context))
         {
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            return;
+            throw new UnauthorizedAccessException("Access denied");
         }
 
         await next(context);

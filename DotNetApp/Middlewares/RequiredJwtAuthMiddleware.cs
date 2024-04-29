@@ -46,6 +46,9 @@ public class RequiredJwtAuthMiddleware(RequestDelegate next, JwtService jwtServi
                     // If the token is invalid, set the response status code to 401 and return
                     throw new UnauthorizedAccessException("Unauthorized access. Invalid token.");
                 }
+                
+                // set access token to context
+                context.Items["AccessToken"] = token;
             }
             else
             {

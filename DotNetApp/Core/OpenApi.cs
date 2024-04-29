@@ -14,7 +14,7 @@ public static class OpenApi
                 Title = "DotNetApp API",
                 Version = "v1",
                 Description = "A sample API to demonstrate API documentation",
-                TermsOfService = new Uri("http://khodecamp.com"),
+                TermsOfService = new Uri("https://khodecamp.com"),
                 Contact = new OpenApiContact
                 {
                     Name = "Thorn Developer",
@@ -93,6 +93,7 @@ public static class OpenApi
             options.EnableValidator();
             options.DisplayRequestDuration();
             options.DefaultModelRendering(ModelRendering.Example);
+            options.EnablePersistAuthorization();
         });
 
         // ReDoc configuration

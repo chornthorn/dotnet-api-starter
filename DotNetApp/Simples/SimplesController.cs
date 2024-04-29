@@ -9,7 +9,7 @@ namespace DotNetApp.Simples;
 
 [ApiController]
 [Route("api/simples")]
-[RequiredAuth]
+// [RequiredAuth]
 [SwaggerTag("Simples CRUD operations")]
 public class SimplesController(SimplesService simplesService) : Controller
 {

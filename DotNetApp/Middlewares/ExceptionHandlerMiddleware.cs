@@ -61,7 +61,7 @@ public class ExceptionHandlerMiddleware(RequestDelegate next)
             {
                 status = context.Response.StatusCode,
                 message = "Internal Server Error",
-                detailed = exception.Message
+                detailed = exception.Message,
             };
 
             var result = JsonConvert.SerializeObject(response);
