@@ -16,11 +16,11 @@ public class AuthService(JwtService jwtService, KeycloakService keycloakService)
         try
         {
             var token = jwtService.GenerateToken(username);
-            return new Response<string> { Success = true, Data = token };
+            return new Response<string> { Data = token };
         }
         catch
         {
-            return new Response<string> { Success = false, Message = "Failed to generate token" };
+            return new Response<string> { Message = "Failed to generate token" };
         }
     }
 
@@ -29,11 +29,11 @@ public class AuthService(JwtService jwtService, KeycloakService keycloakService)
         try
         {
             var token = jwtService.GenerateToken(username);
-            return new Response<string> { Success = true, Data = token };
+            return new Response<string> { Data = token };
         }
         catch
         {
-            return new Response<string> { Success = false, Message = "Failed to generate token" };
+            return new Response<string> { Message = "Failed to generate token" };
         }
     }
 
@@ -42,11 +42,11 @@ public class AuthService(JwtService jwtService, KeycloakService keycloakService)
         try
         {
             var user = new { Username = "admin" };
-            return new Response<dynamic> { Success = true, Data = user };
+            return new Response<dynamic> { Data = user };
         }
         catch
         {
-            return new Response<dynamic> { Success = false, Message = "Failed to get user info" };
+            return new Response<dynamic> { Message = "Failed to get user info" };
         }
     }
 
@@ -60,12 +60,12 @@ public class AuthService(JwtService jwtService, KeycloakService keycloakService)
                 Password = loginDto.Password
             });
 
-            return new Response<LoginResDto> { Success = true, Data = loginResDto };
+            return new Response<LoginResDto> { Data = loginResDto };
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return new Response<LoginResDto> { Success = false, Message = "Failed to generate token" };
+            return new Response<LoginResDto> { Message = "Failed to generate token" };
         }
     }
 
@@ -74,12 +74,12 @@ public class AuthService(JwtService jwtService, KeycloakService keycloakService)
         try
         {
             var loginResDto = await keycloakService.RefreshToken(refreshToken);
-            return new Response<LoginResDto> { Success = true, Data = loginResDto };
+            return new Response<LoginResDto> { Data = loginResDto };
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return new Response<LoginResDto> { Success = false, Message = "Failed to generate token" };
+            return new Response<LoginResDto> { Message = "Failed to generate token" };
         }
     }
 
@@ -88,12 +88,12 @@ public class AuthService(JwtService jwtService, KeycloakService keycloakService)
         try
         {
             var userInfo = await keycloakService.UserInfo(accessToken);
-            return new Response<KUserInfoDto> { Success = true, Data = userInfo };
+            return new Response<KUserInfoDto> { Data = userInfo };
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return new Response<KUserInfoDto> { Success = false, Message = "Failed to get user info" };
+            return new Response<KUserInfoDto> { Message = "Failed to get user info" };
         }
     }
 
@@ -102,12 +102,12 @@ public class AuthService(JwtService jwtService, KeycloakService keycloakService)
         try
         {
             await keycloakService.Logout(accessToken);
-            return new Response<string> { Success = true, Data = "Logged out" };
+            return new Response<string> { Data = "Logged out" };
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return new Response<string> { Success = false, Message = "Failed to logout" };
+            return new Response<string> { Message = "Failed to logout" };
         }
     }
 }

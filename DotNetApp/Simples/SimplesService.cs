@@ -18,13 +18,12 @@ public class SimplesService(SimplesRepository simplesRepository)
 
             return new Response<List<SimpleDto>>
             {
-                Success = true,
                 Data = simpleDto.ToList()
             };
         }
         catch (Exception e)
         {
-            return new Response<List<SimpleDto>> { Message = e.Message, Success = false };
+            return new Response<List<SimpleDto>> { Message = e.Message };
         }
     }
 
@@ -35,13 +34,12 @@ public class SimplesService(SimplesRepository simplesRepository)
             var simple = await simplesRepository.FindByIdAsync(id);
             return new Response<SimpleDto>
             {
-                Success = true,
                 Data = simple.ToDto()
             };
         }
         catch (Exception e)
         {
-            return new Response<SimpleDto> { Message = e.Message, Success = false };
+            return new Response<SimpleDto> { Message = e.Message };
         }
     }
 
@@ -56,13 +54,12 @@ public class SimplesService(SimplesRepository simplesRepository)
 
             return new Response<SimpleDto>
             {
-                Success = true,
                 Data = createdSimple.ToDto()
             };
         }
         catch (Exception e)
         {
-            return new Response<SimpleDto> { Message = e.Message, Success = false };
+            return new Response<SimpleDto> { Message = e.Message };
         }
     }
 
@@ -77,13 +74,12 @@ public class SimplesService(SimplesRepository simplesRepository)
 
             return new Response<SimpleDto>
             {
-                Success = true,
                 Data = updatedSimple.ToDto()
             };
         }
         catch (Exception e)
         {
-            return new Response<SimpleDto> { Message = e.Message, Success = false };
+            return new Response<SimpleDto> { Message = e.Message };
         }
     }
 
@@ -94,13 +90,12 @@ public class SimplesService(SimplesRepository simplesRepository)
             var deletedSimple = await simplesRepository.DeleteAsync(id);
             return new Response<SimpleDto>
             {
-                Success = true,
                 Data = deletedSimple.ToDto()
             };
         }
         catch (Exception e)
         {
-            return new Response<SimpleDto> { Message = e.Message, Success = false };
+            return new Response<SimpleDto> { Message = e.Message };
         }
     }
 }

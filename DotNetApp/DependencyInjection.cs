@@ -12,4 +12,13 @@ public static class DependencyInjection
     {
         return services;
     }
+
+    public static IServiceCollection AddFilters(this IServiceCollection services)
+    {
+        services.AddControllers(options =>
+        {
+            // add filters here
+        });
+        return services;
+    }
 }

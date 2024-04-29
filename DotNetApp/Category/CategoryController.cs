@@ -1,5 +1,6 @@
 using DotNetApp.Core.attribute;
 using DotNetApp.Core.Enum;
+using DotNetApp.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -9,6 +10,7 @@ namespace DotNetApp.Category;
 [Route("api/categories")]
 public class CategoryController : Controller
 {
+    [Public]
     [HttpGet]
     [Policy(resource: "category", scope: Scope.Reads)]
     [SwaggerOperation(
@@ -18,9 +20,10 @@ public class CategoryController : Controller
     )]
     public IActionResult Get()
     {
-        return Ok("Get all categories");
+        throw new UnauthorizedException("Bad Request Exception Test");
     }
 
+    [Public]
     [HttpGet("{id}")]
     [Policy(resource: "category", scope: Scope.Read)]
     [SwaggerOperation(
@@ -30,7 +33,14 @@ public class CategoryController : Controller
     )]
     public IActionResult Get(int id)
     {
-        return Ok($"Get category by id: {id}");
+        if (id == 1)
+        {
+            throw new UnprocessableEntityException("Unprocessable Entity Exception Test");
+        }
+        else
+        {
+            throw new NotFoundException("Category not found");
+        }
     }
 
     [HttpPost]

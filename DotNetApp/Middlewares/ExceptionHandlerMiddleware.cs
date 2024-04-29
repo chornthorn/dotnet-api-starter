@@ -1,4 +1,6 @@
 using System.Net;
+using DotNetApp.Core;
+using DotNetApp.Core.Exceptions;
 using Newtonsoft.Json;
 
 namespace DotNetApp.Middlewares;
@@ -19,53 +21,99 @@ public class ExceptionHandlerMiddleware(RequestDelegate next)
 
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        // check type of exception
-        if (exception is UnauthorizedAccessException)
+        switch (exception)
         {
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-
-            var response = new
+            case UnauthorizedException:
             {
-                status = context.Response.StatusCode,
-                message = "Unauthorized",
-                detailed = exception.Message
-            };
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
 
-            var result = JsonConvert.SerializeObject(response);
-            return context.Response.WriteAsync(result);
-        }
+                var response = new Response<object>
+                {
+                    StatusCode = context.Response.StatusCode,
+                    Message = "Unauthorized",
+                    Detailed = exception.Message
+                };
 
-        if (exception is BadHttpRequestException)
-        {
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-            var response = new
+                var result = JsonConvert.SerializeObject(response);
+                return context.Response.WriteAsync(result);
+            }
+            case NotFoundException:
             {
-                status = context.Response.StatusCode,
-                message = "Bad Request",
-                detailed = exception.Message
-            };
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
-            var result = JsonConvert.SerializeObject(response);
-            return context.Response.WriteAsync(result);
-        }
+                var response = new Response<object>
+                {
+                    StatusCode = context.Response.StatusCode,
+                    Message = "Not Found",
+                    Detailed = exception.Message
+                };
 
-        else
-        {
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-            var response = new
+                var result = JsonConvert.SerializeObject(response);
+                return context.Response.WriteAsync(result);
+            }
+            case BadRequestException:
             {
-                status = context.Response.StatusCode,
-                message = "Internal Server Error",
-                detailed = exception.Message,
-            };
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
-            var result = JsonConvert.SerializeObject(response);
-            return context.Response.WriteAsync(result);
+                var response = new Response<object>
+                {
+                    StatusCode = context.Response.StatusCode,
+                    Message = "Bad Request",
+                    Detailed = exception.Message
+                };
+
+                var result = JsonConvert.SerializeObject(response);
+                return context.Response.WriteAsync(result);
+            }
+            case ForbiddenException:
+            {
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+
+                var response = new Response<object>
+                {
+                    StatusCode = context.Response.StatusCode,
+                    Message = "Forbidden",
+                    Detailed = exception.Message
+                };
+
+                var result = JsonConvert.SerializeObject(response);
+                return context.Response.WriteAsync(result);
+            }
+            case UnprocessableEntityException:
+            {
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.UnprocessableEntity;
+
+                var response = new Response<object>
+                {
+                    StatusCode = context.Response.StatusCode,
+                    Message = "Unprocessable Entity",
+                    Detailed = exception.Message
+                };
+
+                var result = JsonConvert.SerializeObject(response);
+                return context.Response.WriteAsync(result);
+            }
+            default:
+            {
+                context.Response.ContentType = "application/json";
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                var response = new Response<object>
+                {
+                    StatusCode = context.Response.StatusCode,
+                    Message = "Internal Server Error",
+                    Detailed = exception.Message
+                };
+
+                var result = JsonConvert.SerializeObject(response);
+
+                return context.Response.WriteAsync(result);
+            }
         }
     }
 }
