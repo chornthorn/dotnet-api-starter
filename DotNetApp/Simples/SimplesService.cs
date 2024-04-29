@@ -1,5 +1,6 @@
 using DotNetApp.Core;
 using DotNetApp.Core.attribute;
+using DotNetApp.Core.Exceptions;
 using DotNetApp.Simples.Dto;
 using DotNetApp.Simples.Mapper;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,12 @@ public class SimplesService(SimplesRepository simplesRepository)
         try
         {
             var simple = await simplesRepository.FindByIdAsync(id);
+
+            if (simple == null)
+            {
+                throw new NotFoundException($"Simple with id {id} not found.");
+            }
+
             return new Response<SimpleDto>
             {
                 Data = simple.ToDto()
@@ -39,7 +46,7 @@ public class SimplesService(SimplesRepository simplesRepository)
         }
         catch (Exception e)
         {
-            return new Response<SimpleDto> { Message = e.Message };
+            throw new BadRequestException(e.Message);
         }
     }
 
@@ -67,6 +74,12 @@ public class SimplesService(SimplesRepository simplesRepository)
     {
         try
         {
+            var existingSimple = await simplesRepository.FindByIdAsync(id);
+            if (existingSimple == null)
+            {
+                throw new NotFoundException($"Simple with id {id} not found.");
+            }
+            
             var updatedSimple = await simplesRepository.UpdateAsync(id, new()
             {
                 Name = dto.Name
@@ -79,7 +92,7 @@ public class SimplesService(SimplesRepository simplesRepository)
         }
         catch (Exception e)
         {
-            return new Response<SimpleDto> { Message = e.Message };
+            throw new BadRequestException(e.Message);
         }
     }
 
@@ -87,6 +100,12 @@ public class SimplesService(SimplesRepository simplesRepository)
     {
         try
         {
+            var existingSimple = await simplesRepository.FindByIdAsync(id);
+            if (existingSimple == null)
+            {
+                throw new NotFoundException($"Simple with id {id} not found.");
+            }
+            
             var deletedSimple = await simplesRepository.DeleteAsync(id);
             return new Response<SimpleDto>
             {
@@ -95,7 +114,7 @@ public class SimplesService(SimplesRepository simplesRepository)
         }
         catch (Exception e)
         {
-            return new Response<SimpleDto> { Message = e.Message };
+            throw new BadRequestException(e.Message);
         }
     }
 }

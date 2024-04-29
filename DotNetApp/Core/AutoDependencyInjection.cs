@@ -13,22 +13,24 @@ public static class AutoDependencyInjection
             .Where(p => Attribute.IsDefined(p, typeof(InjectableAttribute)));
 
         // Check if any types were found
-        if (!types.Any())
+        var enumerable = types.ToList();
+        if (enumerable.Count == 0)
         {
             throw new Exception("No types found with the [Injectable] attribute.");
         }
 
         // Find root dependencies (types that are not dependencies of any other types)
-        var rootDependencies = types
-            .Where(t => !types.Any(otherType => otherType.GetConstructors()
+        var rootDependencies = enumerable
+            .Where(t => !enumerable.Any(otherType => otherType.GetConstructors()
                 .Any(c => c.GetParameters().Any(p => p.ParameterType == t))));
 
         // Register root dependencies
-        foreach (var type in rootDependencies)
+        var dependencies = rootDependencies.ToList();
+        foreach (var type in dependencies)
         {
             // check if the type has a Scoped true [Injectable(Scoped: true)]
             var attribute = type.GetCustomAttribute<InjectableAttribute>();
-            if (attribute != null && attribute.Scoped)
+            if (attribute is { Scoped: true })
             {
                 services.AddScoped(type);
             }
@@ -39,12 +41,12 @@ public static class AutoDependencyInjection
         }
 
         // Register other dependencies
-        var otherDependencies = types.Except(rootDependencies);
+        var otherDependencies = enumerable.Except(dependencies);
         foreach (var type in otherDependencies)
         {
             // check if the type has a Scoped true [Injectable(Scoped: true)]
             var attribute = type.GetCustomAttribute<InjectableAttribute>();
-            if (attribute != null && attribute.Scoped)
+            if (attribute is { Scoped: true })
             {
                 services.AddScoped(type);
             }
@@ -53,35 +55,5 @@ public static class AutoDependencyInjection
                 services.AddSingleton(type);
             }
         }
-
-        // console log dependencies tree and its dependencies and scoped
-        Console.WriteLine("----------------------------------------------------------");
-        Console.WriteLine("Dependencies tree:");
-        foreach (var type in types)
-        {
-            var attribute = type.GetCustomAttribute<InjectableAttribute>();
-            var constructor = type.GetConstructors().FirstOrDefault();
-            var parameters = constructor?.GetParameters();
-            var dependencies = parameters?.Select(p => p.ParameterType.Name).ToList();
-
-            if (dependencies != null)
-            {
-                // if service not have dependencies
-                if (dependencies.Count == 0)
-                {
-                    Console.WriteLine($"{type.Name} -> None");
-                }
-                else
-                {
-                    Console.WriteLine($"{type.Name} -> {string.Join(" -> ", dependencies)}");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"{type.Name}");
-            }
-        }
-
-        Console.WriteLine("----------------------------------------------------------");
     }
 }

@@ -1,5 +1,6 @@
 using DotNetApp.Core.attribute;
 using DotNetApp.Core.Enum;
+using DotNetApp.Core.Exceptions;
 using DotNetApp.Core.Security;
 
 namespace DotNetApp.Middlewares;
@@ -38,7 +39,7 @@ public class PolicyEnforcementMiddleware(RequestDelegate next, HttpClient httpCl
         // Enforce the policy
         if (!await _policyEnforcer.EnforcePolicy(resource, scope, context))
         {
-            throw new UnauthorizedAccessException("Access denied");
+            throw new UnauthorizedException("Access denied");
         }
 
         await next(context);
