@@ -31,10 +31,10 @@ public class PolicyEnforcementMiddleware(RequestDelegate next, HttpClient httpCl
         }
 
         // Get the policy attribute
-        var policyAttribute = endpoint?.Metadata.GetMetadata<PolicyAttribute>();
+        var AuthPolicyAttribute = endpoint?.Metadata.GetMetadata<AuthPolicyAttribute>();
 
-        var resource = policyAttribute?.Resource ?? string.Empty;
-        var scope = policyAttribute?.Scope ?? Scope.None;
+        var resource = AuthPolicyAttribute?.Resource ?? string.Empty;
+        var scope = AuthPolicyAttribute?.Scope ?? Scope.None;
 
         // Enforce the policy
         if (!await _policyEnforcer.EnforcePolicy(resource, scope, context))

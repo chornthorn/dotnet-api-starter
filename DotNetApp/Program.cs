@@ -9,8 +9,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.InitializeAutoDependency();
 builder.Services.AddCore();
-builder.Services.AddSecurity();
 builder.Services.AddSwaggerGen();
+builder.Services.ManualDependency();
+builder.Services.AddBindings();
 
 
 var app = builder.Build();
@@ -24,5 +25,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers();
 app.AddMiddlewares();
+
+// Initialize database
+await app.InitializeDatabase();
 
 app.Run();

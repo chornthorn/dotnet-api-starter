@@ -13,12 +13,12 @@ public class JwtService(RsaKeyProvider rsaKeyProvider)
     private readonly RSA _privateRsa = rsaKeyProvider.GetRsaPrivateKey();
     private readonly RSA _publicRsa = rsaKeyProvider.GetRsaPublicKey();
 
-    public string GenerateToken(string username)
+    public string GenerateToken(string sub)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, username) }),
+            Subject = new ClaimsIdentity(new[] { new Claim("sub", sub) }),
             Expires = DateTime.UtcNow.AddDays(7),
             SigningCredentials = new SigningCredentials(new RsaSecurityKey(_privateRsa), SecurityAlgorithms.RsaSha256)
         };

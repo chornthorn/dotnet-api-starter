@@ -12,7 +12,7 @@ public class CategoryController : Controller
 {
     [Public]
     [HttpGet]
-    [Policy(resource: "category", scope: Scope.Reads)]
+    [AuthPolicy(resource: "category", scope: Scope.Reads)]
     [SwaggerOperation(
         Summary = "Get all categories",
         Description = "Get all categories",
@@ -25,7 +25,7 @@ public class CategoryController : Controller
 
     [Public]
     [HttpGet("{id}")]
-    [Policy(resource: "category", scope: Scope.Read)]
+    [AuthPolicy(resource: "category", scope: Scope.Read)]
     [SwaggerOperation(
         Summary = "Get category by id",
         Description = "Get category by id",
@@ -44,7 +44,7 @@ public class CategoryController : Controller
     }
 
     [HttpPost]
-    [Policy(resource: "category", scope: Scope.Create)]
+    [AuthPolicy(resource: "category", scope: Scope.Create)]
     [SwaggerOperation(
         Summary = "Create a new category",
         Description = "Create a new category",
@@ -56,7 +56,7 @@ public class CategoryController : Controller
     }
 
     [HttpPut("{id}")]
-    [Policy(resource: "category", scope: Scope.Update)]
+    [AuthPolicy(resource: "category", scope: Scope.Update)]
     [SwaggerOperation(
         Summary = "Get all categories",
         Description = "Get all categories",
@@ -68,7 +68,7 @@ public class CategoryController : Controller
     }
 
     [HttpDelete("{id}")]
-    [Policy(resource: "category", scope: Scope.Delete)]
+    [AuthPolicy(resource: "category", scope: Scope.Delete)]
     [SwaggerOperation(
         Summary = "Delete category by id",
         Description = "Delete category by id",
