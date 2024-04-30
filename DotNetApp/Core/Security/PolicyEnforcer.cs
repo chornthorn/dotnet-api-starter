@@ -4,7 +4,7 @@ using DotNetApp.Core.Enum;
 
 namespace DotNetApp.Core.Security;
 
-public class PolicyEnforcer(HttpClient httpClient, IConfiguration configuration)
+public class PolicyEnforcer(HttpClient httpClient, IConfiguration configuration) : IPolicyEnforcer
 {
     public async Task<bool> EnforcePolicy(string resource, Scope scope, HttpContext context)
     {

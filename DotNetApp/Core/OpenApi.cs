@@ -1,3 +1,4 @@
+using DotNetApp.Core.Filters;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -26,6 +27,9 @@ public static class OpenApi
                     Url = new Uri("https://www.apache.org/licenses/LICENSE-2.0.html")
                 }
             });
+            
+            // Add the custom filter to ignore the parameters
+            options.OperationFilter<IgnoreParameterFilter>();
 
             options.EnableAnnotations();
             options.AddServer(new OpenApiServer { Url = "http://localhost:5002", Description = "Localhost" });
@@ -87,13 +91,13 @@ public static class OpenApi
         app.UseSwagger();
 
         // Swagger UI configuration
-        app.UseSwaggerUI(options =>
+        app.UseSwaggerUI(c =>
         {
-            options.EnableFilter();
-            options.EnableValidator();
-            options.DisplayRequestDuration();
-            options.DefaultModelRendering(ModelRendering.Example);
-            options.EnablePersistAuthorization();
+            c.EnableFilter();
+            c.EnableValidator();
+            c.DisplayRequestDuration();
+            c.DefaultModelRendering(ModelRendering.Example);
+            c.EnablePersistAuthorization();
         });
 
         // ReDoc configuration

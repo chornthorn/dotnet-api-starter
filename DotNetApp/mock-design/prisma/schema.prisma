@@ -13,7 +13,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Users {
   id       String  @id @default(cuid())
   email    String  @unique
   name     String?
@@ -43,7 +43,7 @@ model UserRole {
   userId String
   roleId Int
 
-  user User @relation(fields: [userId], references: [id])
+  user Users @relation(fields: [userId], references: [id])
   role Role @relation(fields: [roleId], references: [id])
 
   createdAt DateTime  @default(now())

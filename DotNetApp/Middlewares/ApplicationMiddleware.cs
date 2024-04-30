@@ -6,6 +6,7 @@ public static class ApplicationMiddleware
     {
         app.UseMiddleware<ExceptionHandlerMiddleware>();
         app.UseMiddleware<PolicyEnforcementMiddleware>();
+        app.UseMiddleware<MockJwtAuthMiddleware>();
         // app.UseMiddleware<RequiredAuthMiddleware>();
         return app;
     }

@@ -9,12 +9,12 @@ namespace DotNetApp.Simples;
 
 [ApiController]
 [Route("api/simples")]
-// [RequiredAuth]
+[RequiredAuth]
 [SwaggerTag("Simples CRUD operations")]
 public class SimplesController(SimplesService simplesService) : Controller
 {
     [HttpGet]
-    [Policy(resource: "simples", scope: Scope.Reads)]
+    [AuthPolicy(resource: "simples", scope: Scope.Reads)]
     [SwaggerOperation(
         Summary = "Get all simples",
         Description = "Get all simples",
@@ -27,19 +27,20 @@ public class SimplesController(SimplesService simplesService) : Controller
     }
 
     [HttpGet("{id}")]
-    [Policy(resource: "simples", scope: Scope.Read)]
+    [AuthPolicy(resource: "simples", scope: Scope.Read)]
     [SwaggerOperation(
         Summary = "Get simple by id",
         Description = "Get simple by id",
         OperationId = "Simples.GetById"
     )]
-    public async Task<ActionResult<Response<SimpleDto>>> GetByIdAsync([FromRoute] int id)
+    public async Task<ActionResult<Response<SimpleDto>>> GetByIdAsync(int id, [CurrentUser] UserData userData)
     {
+        Console.WriteLine($"User : {userData.Username} - {userData.Id}");
         return await simplesService.FindByIdAsync(id);
     }
 
     [HttpPost]
-    [Policy(resource: "simples", scope: Scope.Create)]
+    [AuthPolicy(resource: "simples", scope: Scope.Create)]
     [SwaggerOperation(
         Summary = "Create simple",
         Description = "Create simple",
@@ -51,7 +52,7 @@ public class SimplesController(SimplesService simplesService) : Controller
     }
 
     [HttpPut("{id}")]
-    [Policy(resource: "simples", scope: Scope.Update)]
+    [AuthPolicy(resource: "simples", scope: Scope.Update)]
     [SwaggerOperation(
         Summary = "Update simple",
         Description = "Update simple",
@@ -63,7 +64,7 @@ public class SimplesController(SimplesService simplesService) : Controller
     }
 
     [HttpDelete("{id}")]
-    [Policy(resource: "simples", scope: Scope.Delete)]
+    [AuthPolicy(resource: "simples", scope: Scope.Delete)]
     [SwaggerOperation(
         Summary = "Delete simple",
         Description = "Delete simple",
