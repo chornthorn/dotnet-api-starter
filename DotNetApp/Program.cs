@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
-builder.Services.InitializeAutoDependency();
+builder.Services.RegisterDependencyInitialization();
 builder.Services.AddCore();
 builder.Services.AddSwaggerGen();
 builder.Services.ManualDependency();

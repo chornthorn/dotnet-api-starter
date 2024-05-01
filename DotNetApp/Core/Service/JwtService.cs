@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace DotNetApp.Core.Serivce;
 
-[Injectable(scoped: false)]
+[Injectable(lifetime: ServiceLifetime.Singleton)]
 public class JwtService(RsaKeyProvider rsaKeyProvider)
 {
     private readonly RSA _privateRsa = rsaKeyProvider.GetRsaPrivateKey();
