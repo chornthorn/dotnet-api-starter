@@ -5,6 +5,33 @@ namespace DotNetApp.Core;
 
 public static class AutoDependencyInjection
 {
+    
+    private static void LogDependencyTree(Type type, ServiceLifetime lifetime, HashSet<Type> visitedTypes, int depth = 0)
+    {
+        // Indentation for better visualization
+        Console.WriteLine(new string('-', depth) + "> " + type.Name + " - Lifetime: " + lifetime);
+
+        // Mark type as visited to avoid cycles
+        visitedTypes.Add(type);
+
+        // Get dependencies of the current type
+        var dependencies = type.GetConstructors()
+            .SelectMany(ctor => ctor.GetParameters().Select(param => param.ParameterType))
+            .Where(dependency => !visitedTypes.Contains(dependency));
+
+        // Recursively log dependencies
+        foreach (var dependency in dependencies)
+        {
+            LogDependencyTree(dependency, lifetime, visitedTypes, depth + 1);
+        }
+
+        // Indicate the end of this branch
+        if (depth == 0)
+        {
+            Console.WriteLine(new string('-', depth) + "-----------------------------------------------------------");
+        }
+    }
+    
     private static void InitializeAutoDependencies<TAttribute>(this IServiceCollection services)
         where TAttribute : Attribute
     {
@@ -13,12 +40,25 @@ public static class AutoDependencyInjection
             .SelectMany(s => s.GetTypes())
             .Where(p => Attribute.IsDefined(p, typeof(TAttribute)));
 
+        var visitedTypes = new HashSet<Type>();
+
+        foreach (var type in types)
+        {
+            var attribute = type.GetCustomAttribute<TAttribute>();
+            var lifetimeProperty = typeof(TAttribute).GetProperty("Lifetime");
+            var lifetime = lifetimeProperty != null
+                ? (ServiceLifetime)lifetimeProperty.GetValue(attribute)
+                : ServiceLifetime.Scoped;
+
+            LogDependencyTree(type, lifetime, visitedTypes);
+        }
+
         // Check if any types were found
         var enumerable = types.ToList();
-        if (enumerable.Count == 0)
-        {
-            throw new Exception($"No types found with the [{typeof(TAttribute).Name}] attribute.");
-        }
+        // if (enumerable.Count == 0)
+        // {
+        //     throw new Exception($"No types found with the [{typeof(TAttribute).Name}] attribute.");
+        // }
 
         // Find root dependencies (types that are not dependencies of any other types)
         var rootDependencies = enumerable
@@ -90,7 +130,7 @@ public static class AutoDependencyInjection
     public static void RegisterDependencyInitialization(this IServiceCollection services)
     {
         services.InitializeAutoDependencies<InjectableAttribute>();
-        services.InitializeAutoDependencies<ServiceAttribute>();
         services.InitializeAutoDependencies<RepositoryAttribute>();
+        services.InitializeAutoDependencies<ServiceAttribute>();
     }
 }
