@@ -3,3 +3,6 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+# Ignore .DS_Store files of any place
+.DS_Store
+/**/.DS_Store
