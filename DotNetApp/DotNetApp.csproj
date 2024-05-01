@@ -36,6 +36,8 @@
 
     <ItemGroup>
       <Folder Include="mock-design\" />
+      <Folder Include="Permissions\Dto\" />
+      <Folder Include="Permissions\Mapper\" />
     </ItemGroup>
 
 </Project>
