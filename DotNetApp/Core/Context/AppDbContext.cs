@@ -16,6 +16,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<PrismaMigration> PrismaMigrations { get; set; }
 
+    public virtual DbSet<Product> Products { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<RolePermission> RolePermissions { get; set; }
@@ -101,6 +103,39 @@ public partial class AppDbContext : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasColumnType("datetime(3)")
                 .HasColumnName("started_at");
+        });
+
+        modelBuilder.Entity<Product>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity
+                .ToTable("Product")
+                .UseCollation("utf8mb4_unicode_ci");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
+                .HasColumnType("datetime(3)")
+                .HasColumnName("createdAt");
+            entity.Property(e => e.DeletedAt)
+                .HasColumnType("datetime(3)")
+                .HasColumnName("deletedAt");
+            entity.Property(e => e.Description)
+                .HasMaxLength(191)
+                .HasColumnName("description");
+            entity.Property(e => e.Image)
+                .HasMaxLength(191)
+                .HasColumnName("image");
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(191)
+                .HasColumnName("name");
+            entity.Property(e => e.Price).HasColumnName("price");
+            entity.Property(e => e.Stock).HasColumnName("stock");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime(3)")
+                .HasColumnName("updatedAt");
         });
 
         modelBuilder.Entity<Role>(entity =>
