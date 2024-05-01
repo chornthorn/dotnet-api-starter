@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace DotNetApp.Core.Security;
 
-[Injectable(scoped: false)]
+[Injectable(lifetime: ServiceLifetime.Singleton)]
 public class JWKSManager(IConfiguration configuration, HttpClient httpClient)
 {
     public async Task<JWKS> GetJWKSAsync()

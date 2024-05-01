@@ -4,7 +4,7 @@ using DotNetApp.Core.Classes;
 
 namespace DotNetApp.Core.Security;
 
-[Injectable(scoped: false)]
+[Injectable(lifetime: ServiceLifetime.Singleton)]
 public class RsaKeyProvider(IHostEnvironment environment, IConfiguration configuration)
 {
     public RSA GetRsaPrivateKey()
